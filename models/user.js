@@ -1,30 +1,68 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcryptjs');
 
 var userSchema = mongoose.Schema({
     name:{
-        type:String
+        type:String,
+        require:true
     },
     type:{
-        type:String
+        type:String,
+		required: true
     },
     contactNumber:{
-        type:String
+        type:String,
+		required: true
     },
     email:{
-        type:String
+        type:String,
+		required: true
     },
     username:{
-        type:String
+        type:String,
+		required: true
     },
     password:{
-        type:String
+        type:String,
+		required: true
     }
 });
+
+userSchema.pre('save', function (next) {
+    var user = this;
+    if (this.isModified('password') || this.isNew) {
+        bcrypt.genSalt(10, function (err, salt) {
+            if (err) {
+                return next(err);
+            }
+            bcrypt.hash(user.password, salt, function (err, hash) {
+                if (err) {
+                    return next(err);
+                }
+                user.password = hash;
+                console.log('all hash done');
+                next();
+            });
+        });
+    } else {
+        return next();
+    }
+});
+ 
+userSchema.methods.comparePassword = function (passw, cb) {
+    bcrypt.compare(passw, this.password, function (err, isMatch) {
+        if (err) {
+            return cb(err);
+        }
+        //give it to callback function of cb(in server.js)
+        cb(null, isMatch);
+    });
+};
 
 var User = module.exports = mongoose.model('User', userSchema);
  
 //Get Users
-module.exports.getUserks = function(callback, limit){
+module.exports.getUsers = function(callback, limit){
 	User.find(callback).limit(limit);
 }
 

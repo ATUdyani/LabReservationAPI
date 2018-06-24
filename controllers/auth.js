@@ -33,7 +33,7 @@ var auth = {
    
     validate: function(username, password, cb) {
         User.findOne({
-            name: username
+            username: username
           }, function(err, user) {
             if (err) throw err;
          
@@ -43,7 +43,7 @@ var auth = {
               // check if password matches
               user.comparePassword(password, function (err, isMatch) {
                 if (isMatch && !err) {
-                  cb(user, genToken(user.name));
+                  cb(user, genToken(user.username));
                 } else {
                   cb(user, null);
                 }
@@ -53,7 +53,7 @@ var auth = {
     },
     validateUser: function(username) {
       User.findOne({
-        name: req.body.name
+        username: req.body.username
       }, function(err, user) {
         if(err) throw err;
 

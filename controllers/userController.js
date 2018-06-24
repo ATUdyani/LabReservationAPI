@@ -22,15 +22,15 @@ var user = {
     },
    
     register: function(req, res) {
-      var newUser = new User({
-        name: req.body.name,
-        type: req.body.type,
-        contactNumber: req.body.contactNumber,
-        email: req.body.email,
-        username: req.body.userName,
-        password: req.body.password,
+        var newUser = new User({
+            name: req.body.name,
+            type: req.body.type,
+            contactNumber: req.body.contactNumber,
+            email: req.body.email,
+            username: req.body.username,
+            password: req.body.password
       });
-      User.createUser(newUser, function(err,userRes){
+      User.addUser(newUser, function(err,userRes){
         if (err){
           throw err ;
         }
