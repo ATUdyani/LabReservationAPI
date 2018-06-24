@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+
 var labReservationSchema = mongoose.Schema({
     userId:{
         type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +32,41 @@ var labReservationSchema = mongoose.Schema({
     }
 });
 
-var LabReservation = mongoose.model('LabReservation', labReservationSchema);
+var LabReservation = module.exports = mongoose.model('LabReservation', labReservationSchema);
  
-module.exports = LabReservation;
+//Get labReservations
+module.exports.getLabReservations = function(callback, limit){
+	LabReservation.find(callback).limit(limit);
+}
+
+//Get labReservation
+module.exports.getLabReservationById = function(_id, callback){
+	LabReservation.findById(_id, callback);
+}
+
+//Add LabReservation
+module.exports.addLabReservation = function(labReservation, callback){
+	LabReservation.create(labReservation, callback);
+}
+
+//Update labReservation
+module.exports.updateLabReservation = function(id, labReservation, options, callback){
+	query = {_id: id};
+	update = {
+        userId: labReservation.userId,
+        labId: labReservation.labId,
+		title : labReservation.title,
+		description: labReservation.description,
+		date: labReservation.date,
+		time: labReservation.time,
+		note: labReservation.note,
+		status: labReservation.status
+	}
+	LabReservation.findOneAndUpdate(query, update, options, callback);
+}
+
+//Delete labReservation
+module.exports.removeLabReservation = function(id, callback){
+	query = {_id: id};
+	LabReservation.remove(query, callback);
+}
