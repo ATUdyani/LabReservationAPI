@@ -16,5 +16,7 @@ router.post('/api/lab', lab.create);
 router.get('/api/labReservations', labReservation.getAll);
 router.get('/api/labReservation/:id', labReservation.getOne);
 router.post('/api/labReservation', labReservation.create);
+router.put('/api/labReservation', labReservation.delete);
+router.delete('/api/labReservation', labReservation.update);
 
 module.exports = router;
