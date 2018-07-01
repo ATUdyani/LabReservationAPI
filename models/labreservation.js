@@ -17,11 +17,7 @@ var labReservationSchema = mongoose.Schema({
         type:String
     },
     date:{
-        type:String,
-        require:true
-    },
-    time:{
-        type:String,
+        type:Date,
         require:true
     },
     note:{
@@ -44,6 +40,23 @@ module.exports.getLabReservationById = function(_id, callback){
 	LabReservation.findById(_id, callback);
 }
 
+//Get labReservationByPayload
+module.exports.getLabReservationsByPayload = function(payload,callback){
+    let criteria = [];
+    if (payload.labId && payload.labId.length > 0) {
+        criteria.push({ labId:payload.labId });
+    }
+    if (payload.date && payload.date.length > 0) {
+       criteria.push({ date:payload.date });
+    }
+    if (payload.time && payload.time.length > 0) {
+        criteria.push({ time:payload.time });
+    }
+    criteriaQuery = criteria.length > 0 ? { $and: criteria } : {};
+    LabReservation.find(criteriaQuery,callback);
+    
+}
+
 //Add LabReservation
 module.exports.addLabReservation = function(labReservation, callback){
 	LabReservation.create(labReservation, callback);
@@ -58,7 +71,6 @@ module.exports.updateLabReservation = function(id, labReservation, options, call
 		title : labReservation.title,
 		description: labReservation.description,
 		date: labReservation.date,
-		time: labReservation.time,
 		note: labReservation.note,
 		status: labReservation.status
 	}
