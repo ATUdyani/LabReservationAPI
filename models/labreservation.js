@@ -31,8 +31,8 @@ var labReservationSchema = mongoose.Schema({
 var LabReservation = module.exports = mongoose.model('LabReservation', labReservationSchema);
  
 //Get labReservations
-module.exports.getLabReservations = function(callback, limit){
-	LabReservation.find(callback).limit(limit);
+module.exports.getLabReservations = function(callback){
+	LabReservation.find({}).populate('labId').populate('userId').exec(callback);
 }
 
 //Get labReservation

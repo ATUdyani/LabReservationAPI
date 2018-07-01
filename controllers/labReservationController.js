@@ -1,4 +1,4 @@
-var LabReservation  = require('../models/labReservation.js');
+var LabReservation  = require('../models/labreservation.js');
 
 var labReservation = {
  
@@ -42,16 +42,24 @@ var labReservation = {
         res.json(labReservationRes);
       })
     },
-
-    remove: function(req,res){
-      var id = req.params._id;
-      LabReservation.removeLabReservation(id, function(err,labReservationRes){
+    update: function(req, res) {
+      var updateLabReservation = req.body;
+      LabReservation.updateLabReservation(updateLabReservation, function(err,labReservationRes){
         if (err){
           throw err ;
         }
         res.json(labReservationRes);
-      })
-    }        
+      });
+    },
+
+    delete: function(req, res) {
+      LabReservation.removeLabReservation(req.id, function(err,labReservationRes){
+        if (err){
+          throw err ;
+        }
+        res.json(labReservationRes);
+      });
+    }
 }
 
 module.exports = labReservation;
