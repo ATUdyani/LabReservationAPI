@@ -49,9 +49,6 @@ module.exports.getLabReservationsByPayload = function(payload,callback){
     if (payload.date && payload.date.length > 0) {
        criteria.push({ date:payload.date });
     }
-    if (payload.time && payload.time.length > 0) {
-        criteria.push({ time:payload.time });
-    }
     criteriaQuery = criteria.length > 0 ? { $and: criteria } : {};
     LabReservation.find(criteriaQuery,callback);
     
