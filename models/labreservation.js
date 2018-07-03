@@ -32,6 +32,24 @@ var labReservationSchema = mongoose.Schema({
     }
 });
 
+labReservationSchema.pre('save', function (next) {
+    var user = this;
+    if (user) {
+        LabReservation.validateLabReservation(user, function(err, res){
+            if (err){
+                return next(err);
+              }
+              if(res>0) {
+                return next(new Error("not available"))
+              } else {
+                return next();
+              }
+        });
+    } else {
+        return next();
+    }
+});
+
 var LabReservation = module.exports = mongoose.model('LabReservation', labReservationSchema);
  
 //Get labReservations
@@ -54,7 +72,7 @@ module.exports.getLabReservationsByPayload = function(payload,callback){
        criteria.push({ startDate:{$lte:payload.startDate},endDate:{$gte:payload.startDate} });
     }
     criteriaQuery = criteria.length > 0 ? { $and: criteria } : {};
-    LabReservation.find(criteriaQuery,callback);
+    LabReservation.find(criteriaQuery).populate('labId').populate('userId').exec(callback);
 }
 
 //Add LabReservation
