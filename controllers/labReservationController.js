@@ -23,11 +23,6 @@ var labReservation = {
 
     search: function(req,res){
       var payload = req.body;
-      if (payload.date != ""){
-        var date = Date.parse(payload.date);
-        payload.date = date;
-      }
-      
       LabReservation.getLabReservationsByPayload(payload,function(err,labReservationRes){
         if (err){
           throw err;
@@ -39,8 +34,6 @@ var labReservation = {
 
     create: function(req, res) {
       var newLabReservation = req.body;
-      var date = Date.parse(req.body.date);
-      newLabReservation.date = date;
       LabReservation.addLabReservation(newLabReservation, function(err,labReservationRes){
         if (err){
           throw err ;
@@ -59,7 +52,16 @@ var labReservation = {
     },
 
     delete: function(req, res) {
-      LabReservation.removeLabReservation(req.id, function(err,labReservationRes){
+      LabReservation.removeLabReservation(req.params.id, function(err,labReservationRes){
+        if (err){
+          throw err ;
+        }
+        res.json(labReservationRes);
+      });
+    },
+
+    validate: function(req, res) {
+      LabReservation.validateLabReservation(req.body, function(err,labReservationRes){
         if (err){
           throw err ;
         }

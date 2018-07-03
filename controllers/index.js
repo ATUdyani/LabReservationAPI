@@ -6,18 +6,23 @@ var lab  = require('./labController.js');
 var user  = require('./userController.js');
 var auth = require('./auth.js');
 
-router.post('/login', auth.login);
-router.post('/signup', user.register);
+router.post('/api/login', auth.login);
+router.post('/api/signup', user.register);
+
+router.post('/api/user', auth.getUser);
+router.post('/api/user/validate', auth.authenticate);
+
 
 router.get('/api/labs', lab.getAll);
 router.get('/api/lab/:id', lab.getOne);
 router.post('/api/lab', lab.create);
 
-router.get('/api/labReservations', labReservation.getAll);
-router.get('/api/labReservation/:id', labReservation.getOne);
-router.post('/api/labReservation/search',labReservation.search);
-router.post('/api/labReservation', labReservation.create);
-router.put('/api/labReservation', labReservation.delete);
-router.delete('/api/labReservation', labReservation.update);
+router.get('/api/labreservations', labReservation.getAll);
+router.get('/api/labreservation/:id', labReservation.getOne);
+router.post('/api/labreservation/search',labReservation.search);
+router.post('/api/labreservation', labReservation.create);
+router.post('/api/validatereservation', labReservation.validate);
+router.put('/api/labreservation', labReservation.update);
+router.delete('/api/labreservation/:id', labReservation.delete);
 
 module.exports = router;

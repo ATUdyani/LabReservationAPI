@@ -16,8 +16,12 @@ var labReservationSchema = mongoose.Schema({
     description:{
         type:String
     },
-    date:{
-        type:Date,
+    startDate:{
+        type:Number,
+        require:true
+    },
+    endDate:{
+        type:Number,
         require:true
     },
     note:{
@@ -43,15 +47,14 @@ module.exports.getLabReservationById = function(_id, callback){
 //Get labReservationByPayload
 module.exports.getLabReservationsByPayload = function(payload,callback){
     let criteria = [];
-    if (payload.labId && payload.labId.length > 0) {
+    if (payload.labId != "") {
         criteria.push({ labId:payload.labId });
     }
-    if (payload.date && payload.date.length > 0) {
-       criteria.push({ date:payload.date });
+    if (payload.startDate != null) {
+       criteria.push({ startDate:{$lte:payload.startDate},endDate:{$gte:payload.startDate} });
     }
     criteriaQuery = criteria.length > 0 ? { $and: criteria } : {};
     LabReservation.find(criteriaQuery,callback);
-    
 }
 
 //Add LabReservation
@@ -60,22 +63,21 @@ module.exports.addLabReservation = function(labReservation, callback){
 }
 
 //Update labReservation
-module.exports.updateLabReservation = function(id, labReservation, options, callback){
-	query = {_id: id};
-	update = {
-        userId: labReservation.userId,
-        labId: labReservation.labId,
-		title : labReservation.title,
-		description: labReservation.description,
-		date: labReservation.date,
-		note: labReservation.note,
-		status: labReservation.status
-	}
-	LabReservation.findOneAndUpdate(query, update, options, callback);
+module.exports.updateLabReservation = function(labReservation, callback){
+	query = {_id: labReservation.id};
+	LabReservation.findOneAndUpdate(query, labReservation, callback);
 }
 
 //Delete labReservation
 module.exports.removeLabReservation = function(id, callback){
 	query = {_id: id};
-	LabReservation.remove(query, callback);
+	LabReservation.deleteOne(query, callback);
+}
+
+module.exports.validateLabReservation = function(queryData, callback){
+    var query1 = {startDate:{$lte:queryData.startDate},endDate:{$gte:queryData.endDate}};
+    var query2 = {startDate:{$gte:queryData.startDate,$lte:queryData.endDate}}
+    var query3 = {endDate:{$gte:queryData.startDate,$lte:queryData.endDate}}
+    console.log(query1);
+    LabReservation.count({$or:[query1,query2, query3],labId:queryData.labId},callback);
 }

@@ -34,7 +34,7 @@ var user = {
         if (err){
           throw err ;
         }
-        res.json({success: true,user: userRes});
+        res.json({success: true,msg:"succesfully created"});
       })
     }
 }

@@ -23,7 +23,7 @@ var auth = {
           res.send({success: false, msg: 'Authentication failed. user is not found.'});
         }
         else if(tokenDetail) {
-          res.json({success: true, token: 'JWT ' + tokenDetail.token, expires:tokenDetail.expires});
+          res.json({success: true, token:tokenDetail.token, expires:tokenDetail.expires});
         } else {
           res.send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
@@ -62,6 +62,50 @@ var auth = {
         }
         return user;
       });
+    },
+    authenticate:function(req, res) {
+      var token = req.body.token;
+      if(token !=null) {
+        var decoded = jwt.decode(token, config.secret);
+        if(decoded.username && decoded.exp>new Date()) {
+          User.findOne({
+          username: decoded.username
+        },{password:0}, function(err, user) {
+          if(err) throw err;
+
+          if(!user) {
+            res.json({success: false});
+          }
+          res.json({success: true});
+        });
+      } else {
+        res.json({success: false});
+      }
+    } else {
+      res.json({success: false});
+    }
+    },
+
+    getUser:function(req, res) {
+      var token = req.body.token;
+
+      var decoded = jwt.decode(token, config.secret);
+      if(decoded.username) {
+        User.findOne({
+          username: decoded.username
+        },{password:0}, function(err, user) {
+          if(err) throw err;
+  
+          if(!user) {
+            res.json({success: false, user:null});
+          }
+          res.json({success: true, user:user});
+        });
+      } else {
+        res.json({success: false, user:null});
+      }
+
+
     }
   }
    
